@@ -8,13 +8,12 @@ import Transaction from './components/Transaction';
 class App extends React.Component {
   render() {
     return (
-      <div>
-        {[1, 2, 3, 4].map((item, index)=><Header item={item} key={index}/>)}
+      <>
         <Income />
         <Account />
         <Outcome />
         <Transaction />
-      </div>
+      </>
     );
   }
 }
