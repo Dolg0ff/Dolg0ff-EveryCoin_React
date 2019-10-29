@@ -1,18 +1,32 @@
 import React from 'react';
-import Header from './Header';
-import Income from './components/Income';
-import Account from './components/Account';
-import Outcome from './components/Outcome';
-import Transaction from './components/Transaction';
+import Accounting from './components/Accounting';
+import Expenses from './components/Expenses';
+import Transactions from './components/Transactions';
 
 class App extends React.Component {
+  state = {
+    incomeList: [],
+    outcomeList: [],
+  };
+  async componentDidMount() {
+    fetch('https://localhost:5001/api/accounts')
+      .then(response => response.json())
+      .then(json => {
+        const data = json;
+        console.log(data);
+
+        this.setState({
+          incomeList: data.filter(item => item.type === 1),
+          outcomeList: data.filter(item => item.type === 2),
+        });
+      });
+  }
   render() {
     return (
       <>
-        <Income />
-        <Account />
-        <Outcome />
-        <Transaction />
+        <Accounting incomeList={this.state.incomeList} />
+        <Expenses outcomeList={this.state.outcomeList} />
+        <Transactions />
       </>
     );
   }

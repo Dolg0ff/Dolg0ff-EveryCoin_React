@@ -6,17 +6,33 @@ class Transaction extends React.Component {
     arrayTransaction: [],
     transactionKey: 'transactionKey',
   };
-  componentDidMount() {
-    this.setState({
-      arrayTransaction: JSON.parse(localStorage.getItem(this.state.transactionKey)) || [],
-    });
+  async componentDidMount() {
+    fetch('https://localhost:5001/api/transactions')
+      .then(response => response.json())
+      .then(json => {
+        const data = json;
+        console.log(data);
+        this.setState({ arrayTransaction: data });
+      });
   }
   addTransaction(event) {
     event.preventDefault();
     const arrayTransaction = addTr(event, this.state.transactionKey, this.state.arrayTransaction);
     this.setState({ arrayTransaction });
+    let lastObject = arrayTransaction.pop();
+    lastObject.type = 2;
+    console.log(lastObject);
+
+    fetch('https://localhost:5001/api/transactions/add', {
+      method: 'POST',
+      body: JSON.stringify(lastObject),
+      headers: {
+        'content-type': 'application/json',
+      },
+    }).then(response => console.log(response.json()));
   }
   render() {
+    console.log(this.state.arrayTransaction);
     return (
       <>
         <form onSubmit={this.addTransaction.bind(this)}>
@@ -24,7 +40,7 @@ class Transaction extends React.Component {
           <input name="to" type="text" placeholder="to account" required="required" />
           <input name="count" type="text" placeholder="count" required="required" />
           <input name="comment" type="text" placeholder="comment" />
-          <button class="addTransaction">Add</button>
+          <button type="submit">Add</button>
         </form>
         <table>
           <thead>
@@ -38,8 +54,8 @@ class Transaction extends React.Component {
           <tbody id="transactionTable">
             {this.state.arrayTransaction.map((item, index) => (
               <tr key={index}>
-                <td>{item.from}</td>
-                <td>{item.to}</td>
+                <td>{item.fromAccountName}</td>
+                <td>{item.toAccountName}</td>
                 <td>{item.count}</td>
                 <td>{item.comment}</td>
               </tr>
