@@ -1,5 +1,6 @@
 import React from 'react';
-import add from '../utils/add';
+import updateLocalStorage from '../utils/updateLocalStorage';
+import getFormData from '../utils/getFormData';
 
 class Outcome extends React.Component {
   state = {
@@ -9,7 +10,11 @@ class Outcome extends React.Component {
 
   addOutcome(event) {
     event.preventDefault();
-    const outcomeList = add(event, this.state.outcomeKey, this.state.outcomeList);
+    const formEssence = event.target;
+    const formData = getFormData(formEssence);
+    const outcomeList = [...this.state.outcomeList, formData];
+    updateLocalStorage(this.state.outcomeKey, outcomeList); 
+    formEssence.reset();
     this.setState({ outcomeList });
     let lastObject = outcomeList.pop();
     lastObject.type = 2;

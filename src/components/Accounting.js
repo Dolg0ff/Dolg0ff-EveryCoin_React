@@ -1,5 +1,6 @@
 import React from 'react';
-import add from '../utils/add';
+import updateLocalStorage from '../utils/updateLocalStorage';
+import getFormData from '../utils/getFormData';
 
 class Account extends React.Component {
   state = {
@@ -17,7 +18,11 @@ class Account extends React.Component {
 
   addAccount(event) {
     event.preventDefault();
-    const incomeList = add(event, this.state.accountKey, this.state.incomeList);
+    const formEssence = event.target;
+    const formData = getFormData(formEssence);
+    const incomeList = [...this.state.incomeList, formData];
+    updateLocalStorage(this.state.accountKey, incomeList); 
+    formEssence.reset();
     console.log(incomeList);
     let lastObject = incomeList.pop();
     this.setState(state => ({
